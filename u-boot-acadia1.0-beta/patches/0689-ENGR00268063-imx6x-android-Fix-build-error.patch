@@ -1,0 +1,29 @@
+From 5c1494a480e511620a0fc72c9d887551abde6515 Mon Sep 17 00:00:00 2001
+From: Lin Fuzhen <fuzhen.lin@freescale.com>
+Date: Thu, 20 Jun 2013 20:47:18 +0800
+Subject: [PATCH 689/691] ENGR00268063 imx6x android: Fix build error
+
+Fix build error when build Android
+
+Signed-off-by: Lin Fuzhen <fuzhen.lin@freescale.com>
+---
+ cpu/arm_cortexa8/mx6/generic.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/cpu/arm_cortexa8/mx6/generic.c b/cpu/arm_cortexa8/mx6/generic.c
+index da24b25..ecb196c 100644
+--- a/cpu/arm_cortexa8/mx6/generic.c
++++ b/cpu/arm_cortexa8/mx6/generic.c
+@@ -1509,6 +1509,9 @@ uint32_t authenticate_image(uint32_t ddr_start, uint32_t image_size)
+ 
+ 
+ #ifdef CONFIG_ANDROID_RECOVERY
++#ifndef CONFIG_ANDROID_RECOVERY_BOOTCMD_SD
++#define CONFIG_ANDROID_RECOVERY_BOOTCMD_SD CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC
++#endif
+ struct reco_envs supported_reco_envs[BOOT_DEV_NUM] = {
+ 	{
+ 		.cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC,
+-- 
+1.7.7.4
+

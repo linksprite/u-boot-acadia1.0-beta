@@ -1,0 +1,94 @@
+From e146335a86cb9fcc2c9bc3aa686754d7ad92c673 Mon Sep 17 00:00:00 2001
+From: Lin Fuzhen <fuzhen.lin@freescale.com>
+Date: Wed, 19 Jun 2013 14:20:22 +0800
+Subject: [PATCH 687/691] ENGR00266869-1 imx6x sarebsd: Fix recovery fail
+ issue on SD
+
+Correct the recovery environment setting when boot from SD card on
+sabresd board
+
+Signed-off-by: Lin Fuzhen <fuzhen.lin@freescale.com>
+---
+ board/freescale/common/recovery.c       |    3 ++-
+ cpu/arm_cortexa8/mx6/generic.c          |    2 +-
+ include/configs/mx6dl_sabresd_android.h |    4 +++-
+ include/configs/mx6q_sabresd_android.h  |    4 +++-
+ 4 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/board/freescale/common/recovery.c b/board/freescale/common/recovery.c
+index 5704e09..31a8076 100644
+--- a/board/freescale/common/recovery.c
++++ b/board/freescale/common/recovery.c
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale Android Recovery mode checking routing
+  *
+- * Copyright (C) 2010-2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2010-2013 Freescale Semiconductor, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -101,6 +101,7 @@ void setup_recovery_env(void)
+ 	char *env, *boot_cmd;
+ 	int bootdev = get_boot_device();
+ 
++	printf("recovery on bootdev: %d\n", bootdev);
+ 	boot_cmd = supported_reco_envs[bootdev].cmd;
+ 
+ 	if (boot_cmd == NULL) {
+diff --git a/cpu/arm_cortexa8/mx6/generic.c b/cpu/arm_cortexa8/mx6/generic.c
+index ee160d5..da24b25 100644
+--- a/cpu/arm_cortexa8/mx6/generic.c
++++ b/cpu/arm_cortexa8/mx6/generic.c
+@@ -1535,7 +1535,7 @@ struct reco_envs supported_reco_envs[BOOT_DEV_NUM] = {
+ 		.args = CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC,
+ 	},
+ 	{
+-		.cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC,
++		.cmd = CONFIG_ANDROID_RECOVERY_BOOTCMD_SD,
+ 		.args = CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC,
+ 	},
+ 	{
+diff --git a/include/configs/mx6dl_sabresd_android.h b/include/configs/mx6dl_sabresd_android.h
+index c129890..f903e99 100644
+--- a/include/configs/mx6dl_sabresd_android.h
++++ b/include/configs/mx6dl_sabresd_android.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2010-2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2010-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6DL SabreSD Freescale board.
+  *
+@@ -59,6 +59,8 @@
+ #define CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC NULL
+ #define CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC  \
+ 	"booti mmc3 recovery"
++#define CONFIG_ANDROID_RECOVERY_BOOTCMD_SD  \
++	"booti mmc2 recovery"
+ #define CONFIG_ANDROID_RECOVERY_CMD_FILE "/recovery/command"
+ #define CONFIG_INITRD_TAG
+ 
+diff --git a/include/configs/mx6q_sabresd_android.h b/include/configs/mx6q_sabresd_android.h
+index 130f8fa..4094cbe 100644
+--- a/include/configs/mx6q_sabresd_android.h
++++ b/include/configs/mx6q_sabresd_android.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Q Sabre Lite2 Freescale board.
+  *
+@@ -56,6 +56,8 @@
+ #define CONFIG_ANDROID_RECOVERY_BOOTARGS_MMC NULL
+ #define CONFIG_ANDROID_RECOVERY_BOOTCMD_MMC  \
+ 	"booti mmc3 recovery"
++#define CONFIG_ANDROID_RECOVERY_BOOTCMD_SD  \
++	"booti mmc2 recovery"
+ #define CONFIG_ANDROID_RECOVERY_CMD_FILE "/recovery/command"
+ #define CONFIG_INITRD_TAG
+ 
+-- 
+1.7.7.4
+

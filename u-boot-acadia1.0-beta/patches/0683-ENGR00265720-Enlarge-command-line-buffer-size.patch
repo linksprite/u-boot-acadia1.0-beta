@@ -1,0 +1,37 @@
+From 3646cf55f4c5e82268743c78fbe1112d098e6981 Mon Sep 17 00:00:00 2001
+From: "guoyin.chen" <guoyin.chen@freescale.com>
+Date: Wed, 5 Jun 2013 15:58:34 +0800
+Subject: [PATCH 683/691] ENGR00265720 Enlarge command line buffer size
+
+Align mx6q_sabreauto_nand config to other mx6q_* config
+for command line buffer size
+The buffer size is too short for dule display nand config
+
+Signed-off-by: guoyin.chen <guoyin.chen@freescale.com>
+---
+ include/configs/mx6q_sabreauto_nand.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/mx6q_sabreauto_nand.h b/include/configs/mx6q_sabreauto_nand.h
+index 6c2c593..11e086e 100644
+--- a/include/configs/mx6q_sabreauto_nand.h
++++ b/include/configs/mx6q_sabreauto_nand.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2010-2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2010-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Q SABRE-AI Freescale board.
+  *
+@@ -129,7 +129,7 @@
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+ #define CONFIG_SYS_PROMPT		"MX6Q ARD U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+-#define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
++#define CONFIG_SYS_CBSIZE		1024	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+ #define CONFIG_SYS_PBSIZE (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
+ #define CONFIG_SYS_MAXARGS	16	/* max number of command args */
+-- 
+1.7.7.4
+

@@ -1,0 +1,173 @@
+From 613bf07455a67bd0f6bea608888ed825dc0e686b Mon Sep 17 00:00:00 2001
+From: Mahesh Mahadevan <Mahesh.Mahadevan@freescale.com>
+Date: Wed, 5 Jun 2013 15:14:35 -0500
+Subject: [PATCH 684/691] ENGR00266247 Do not limit HAB code for closed
+ systems only
+
+1. It is very useful to print the HAB event details
+when the system is not closed to help debug issues
+before blowing the fuse to secure the system.
+2. Also need to authenticate a signed uImage in a open
+system to help debug issues.
+
+Signed-off-by: Mahesh Mahadevan <Mahesh.Mahadevan@freescale.com>
+---
+ board/freescale/mx6q_arm2/mx6q_arm2.c       |    3 +-
+ board/freescale/mx6q_sabresd/mx6q_sabresd.c |    3 +-
+ board/freescale/mx6sl_arm2/mx6sl_arm2.c     |    3 +-
+ board/freescale/mx6sl_evk/mx6sl_evk.c       |    3 +-
+ cpu/arm_cortexa8/mx6/generic.c              |   64 +++++++++++++--------------
+ 5 files changed, 35 insertions(+), 41 deletions(-)
+
+diff --git a/board/freescale/mx6q_arm2/mx6q_arm2.c b/board/freescale/mx6q_arm2/mx6q_arm2.c
+index e8c54c9..d6d7257 100644
+--- a/board/freescale/mx6q_arm2/mx6q_arm2.c
++++ b/board/freescale/mx6q_arm2/mx6q_arm2.c
+@@ -1449,8 +1449,7 @@ int checkboard(void)
+ 	}
+ 
+ #ifdef CONFIG_SECURE_BOOT
+-	if (check_hab_enable() == 1)
+-		get_hab_status();
++	get_hab_status();
+ #endif
+ 
+ 	return 0;
+diff --git a/board/freescale/mx6q_sabresd/mx6q_sabresd.c b/board/freescale/mx6q_sabresd/mx6q_sabresd.c
+index 32f23ac..b37b776 100644
+--- a/board/freescale/mx6q_sabresd/mx6q_sabresd.c
++++ b/board/freescale/mx6q_sabresd/mx6q_sabresd.c
+@@ -1965,8 +1965,7 @@ int checkboard(void)
+ 	}
+ 
+ #ifdef CONFIG_SECURE_BOOT
+-	if (check_hab_enable() == 1)
+-		get_hab_status();
++	get_hab_status();
+ #endif
+ 
+ 	return 0;
+diff --git a/board/freescale/mx6sl_arm2/mx6sl_arm2.c b/board/freescale/mx6sl_arm2/mx6sl_arm2.c
+index 5c28ebc..0e4027e 100644
+--- a/board/freescale/mx6sl_arm2/mx6sl_arm2.c
++++ b/board/freescale/mx6sl_arm2/mx6sl_arm2.c
+@@ -1098,8 +1098,7 @@ int checkboard(void)
+ 	}
+ 
+ #ifdef CONFIG_SECURE_BOOT
+-	if (check_hab_enable() == 1)
+-		get_hab_status();
++	get_hab_status();
+ #endif
+ 
+ 	return 0;
+diff --git a/board/freescale/mx6sl_evk/mx6sl_evk.c b/board/freescale/mx6sl_evk/mx6sl_evk.c
+index 6cdcc0f..e29761e 100644
+--- a/board/freescale/mx6sl_evk/mx6sl_evk.c
++++ b/board/freescale/mx6sl_evk/mx6sl_evk.c
+@@ -1117,8 +1117,7 @@ int checkboard(void)
+ 	}
+ 
+ #ifdef CONFIG_SECURE_BOOT
+-	if (check_hab_enable() == 1)
+-		get_hab_status();
++	get_hab_status();
+ #endif
+ 
+ 	return 0;
+diff --git a/cpu/arm_cortexa8/mx6/generic.c b/cpu/arm_cortexa8/mx6/generic.c
+index e3b1692..ee160d5 100644
+--- a/cpu/arm_cortexa8/mx6/generic.c
++++ b/cpu/arm_cortexa8/mx6/generic.c
+@@ -1451,57 +1451,55 @@ uint32_t authenticate_image(uint32_t ddr_start, uint32_t image_size)
+ 	int result = 0;
+ 	ulong start;
+ 
+-	if (check_hab_enable() == 1) {
+-		printf("\nAuthenticate uImage from DDR location 0x%lx...\n",
+-			ddr_start);
++	printf("\nAuthenticate uImage from DDR location 0x%lx...\n", ddr_start);
+ 
+-		hab_caam_clock_enable();
++	hab_caam_clock_enable();
+ 
+-		if (hab_rvt_entry() == HAB_SUCCESS) {
++	if (hab_rvt_entry() == HAB_SUCCESS) {
+ 
+-			/* If not already aligned, Align to ALIGN_SIZE */
+-			if (image_size % ALIGN_SIZE)
+-				ivt_offset = image_size - image_size %
++		/* If not already aligned, Align to ALIGN_SIZE */
++		if (image_size % ALIGN_SIZE)
++			ivt_offset = image_size - image_size %
+ 					ALIGN_SIZE + ALIGN_SIZE;
+-			else
+-				ivt_offset = image_size;
++		else
++			ivt_offset = image_size;
+ 
+-			start = ddr_start;
+-			bytes = ivt_offset + IVT_SIZE + CSF_PAD_SIZE;
++		start = ddr_start;
++		bytes = ivt_offset + IVT_SIZE + CSF_PAD_SIZE;
+ 
+ #ifdef DEBUG_AUTHENTICATE_IMAGE
+-			printf("\nivt_offset = 0x%x, ivt addr = 0x%x\n",
+-			       ivt_offset, ddr_start + ivt_offset);
+-			printf("Dumping IVT\n");
+-			dump_mem(ddr_start + ivt_offset, 0x20);
++		printf("\nivt_offset = 0x%x, ivt addr = 0x%x\n",
++		       ivt_offset, ddr_start + ivt_offset);
++		printf("Dumping IVT\n");
++		dump_mem(ddr_start + ivt_offset, 0x20);
+ 
+-			printf("Dumping CSF Header\n");
+-			dump_mem(ddr_start + ivt_offset + 0x20, 0x40);
++		printf("Dumping CSF Header\n");
++		dump_mem(ddr_start + ivt_offset + 0x20, 0x40);
+ 
+-			get_hab_status();
++		get_hab_status();
+ 
+-			printf("\nCalling authenticate_image in ROM\n");
+-			printf("\tivt_offset = 0x%x\n\tstart = 0x%08x"
+-			       "\n\tbytes = 0x%x\n", ivt_offset, start, bytes);
++		printf("\nCalling authenticate_image in ROM\n");
++		printf("\tivt_offset = 0x%x\n\tstart = 0x%08x"
++		       "\n\tbytes = 0x%x\n", ivt_offset, start, bytes);
+ #endif
+ 
+-			load_addr = (uint32_t)hab_rvt_authenticate_image(
++		load_addr = (uint32_t)hab_rvt_authenticate_image(
+ 					HAB_CID_UBOOT,
+ 					ivt_offset, (void **)&start,
+ 					(size_t *)&bytes, NULL);
+-			if (hab_rvt_exit() != HAB_SUCCESS) {
+-				printf("hab exit function fail\n");
+-				load_addr = 0;
+-			}
+-		} else
+-			printf("hab entry function fail\n");
++		if (hab_rvt_exit() != HAB_SUCCESS) {
++			printf("hab exit function fail\n");
++			load_addr = 0;
++		}
++	} else
++		printf("hab entry function fail\n");
+ 
+-		hab_caam_clock_disable();
++	hab_caam_clock_disable();
++
++	get_hab_status();
+ 
+-		get_hab_status();
+-	}
+ 
+-	if ((!check_hab_enable()) || (load_addr != 0))
++	if (load_addr != 0)
+ 		result = 1;
+ 
+ 	return result;
+-- 
+1.7.7.4
+

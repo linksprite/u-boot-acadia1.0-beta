@@ -1,0 +1,33 @@
+From cbb8de5fa490d3b5da8f117d1dcb84e8e9f3515d Mon Sep 17 00:00:00 2001
+From: Anson Huang <b20788@freescale.com>
+Date: Thu, 25 Apr 2013 11:00:09 +0800
+Subject: [PATCH 681/691] ENGR00260356: i.MX6SL: uboot: reset can NOT work on
+ TO1.2
+
+Boot ROM fix the "glitchless mux" issue on TO1.2 which will mask
+MMDC_CH0_MASK in CCM_CCDR, it will cause different behavior of
+reset, need to clear this MMDC_CHx_MASK field to make sure
+all the i.MX6 series SOCs have same behavior of reset.
+
+Signed-off-by: Anson Huang <b20788@freescale.com>
+---
+ cpu/arm_cortexa8/mx6/generic.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/cpu/arm_cortexa8/mx6/generic.c b/cpu/arm_cortexa8/mx6/generic.c
+index 9aea30d..e3b1692 100644
+--- a/cpu/arm_cortexa8/mx6/generic.c
++++ b/cpu/arm_cortexa8/mx6/generic.c
+@@ -1036,6 +1036,9 @@ int arch_cpu_init(void)
+ {
+ 	int val;
+ 
++	/* Clear MMDC channel mask */
++	writel(0, CCM_BASE_ADDR + 0x4);
++
+ 	/* Due to hardware limitation, on MX6Q we need to gate/ungate all PFDs
+ 	 * to make sure PFD is working right, otherwise, PFDs may
+ 	 * not output clock after reset, MX6DL and MX6SL have added 396M pfd
+-- 
+1.7.7.4
+

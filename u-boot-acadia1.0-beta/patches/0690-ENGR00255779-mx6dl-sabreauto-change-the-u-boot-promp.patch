@@ -1,0 +1,176 @@
+From c9b49bf8b7c64e628ce2625272e4deb65b8c8720 Mon Sep 17 00:00:00 2001
+From: Jason Liu <r64343@freescale.com>
+Date: Wed, 10 Jul 2013 10:19:32 +0800
+Subject: [PATCH 690/691] ENGR00255779 mx6dl/sabreauto: change the u-boot
+ prompt from SOLO to DL
+
+change the mx6dl/sabreauto u-boot prompt from SOLO to DL for better indication
+
+Signed-off-by: Jason Liu <r64343@freescale.com>
+---
+ include/configs/mx6dl_sabreauto.h             |    4 ++--
+ include/configs/mx6dl_sabreauto_mfg.h         |    4 ++--
+ include/configs/mx6dl_sabreauto_nand.h        |    4 ++--
+ include/configs/mx6dl_sabreauto_nand_mfg.h    |    2 +-
+ include/configs/mx6dl_sabreauto_spi-nor.h     |    4 ++--
+ include/configs/mx6dl_sabreauto_spi-nor_mfg.h |    4 ++--
+ include/configs/mx6dl_sabreauto_weimnor.h     |    4 ++--
+ include/configs/mx6dl_sabreauto_weimnor_mfg.h |    4 ++--
+ 8 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/include/configs/mx6dl_sabreauto.h b/include/configs/mx6dl_sabreauto.h
+index 2f6c963..082f7f4 100644
+--- a/include/configs/mx6dl_sabreauto.h
++++ b/include/configs/mx6dl_sabreauto.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Solo SABRE-AI Freescale board.
+  *
+@@ -149,7 +149,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		1024	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+diff --git a/include/configs/mx6dl_sabreauto_mfg.h b/include/configs/mx6dl_sabreauto_mfg.h
+index 591c6c7..eaf0e5c 100644
+--- a/include/configs/mx6dl_sabreauto_mfg.h
++++ b/include/configs/mx6dl_sabreauto_mfg.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Solo SABRE-AI Freescale board.
+  *
+@@ -132,7 +132,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO MFG U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO MFG U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+diff --git a/include/configs/mx6dl_sabreauto_nand.h b/include/configs/mx6dl_sabreauto_nand.h
+index db1b868..73de1df 100644
+--- a/include/configs/mx6dl_sabreauto_nand.h
++++ b/include/configs/mx6dl_sabreauto_nand.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Solo SABRE-AI Freescale board.
+  *
+@@ -132,7 +132,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		1024	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+diff --git a/include/configs/mx6dl_sabreauto_nand_mfg.h b/include/configs/mx6dl_sabreauto_nand_mfg.h
+index f99cd85..23711f6 100644
+--- a/include/configs/mx6dl_sabreauto_nand_mfg.h
++++ b/include/configs/mx6dl_sabreauto_nand_mfg.h
+@@ -132,7 +132,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO MFG U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO MFG U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+diff --git a/include/configs/mx6dl_sabreauto_spi-nor.h b/include/configs/mx6dl_sabreauto_spi-nor.h
+index f6cb520..aadd150 100644
+--- a/include/configs/mx6dl_sabreauto_spi-nor.h
++++ b/include/configs/mx6dl_sabreauto_spi-nor.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Solo SABRE-AI Freescale board.
+  *
+@@ -146,7 +146,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		1024	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+diff --git a/include/configs/mx6dl_sabreauto_spi-nor_mfg.h b/include/configs/mx6dl_sabreauto_spi-nor_mfg.h
+index 1447e11..e0d750a 100644
+--- a/include/configs/mx6dl_sabreauto_spi-nor_mfg.h
++++ b/include/configs/mx6dl_sabreauto_spi-nor_mfg.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Solo SABRE-AI Freescale board.
+  *
+@@ -131,7 +131,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO MFG U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO MFG U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+diff --git a/include/configs/mx6dl_sabreauto_weimnor.h b/include/configs/mx6dl_sabreauto_weimnor.h
+index 86ebc33..8ce2c9f 100644
+--- a/include/configs/mx6dl_sabreauto_weimnor.h
++++ b/include/configs/mx6dl_sabreauto_weimnor.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Solo SABRE-AI Freescale board.
+  *
+@@ -143,7 +143,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+diff --git a/include/configs/mx6dl_sabreauto_weimnor_mfg.h b/include/configs/mx6dl_sabreauto_weimnor_mfg.h
+index 4521d90..e9bba58 100644
+--- a/include/configs/mx6dl_sabreauto_weimnor_mfg.h
++++ b/include/configs/mx6dl_sabreauto_weimnor_mfg.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2012 Freescale Semiconductor, Inc.
++ * Copyright (C) 2012-2013 Freescale Semiconductor, Inc.
+  *
+  * Configuration settings for the MX6Solo SABRE-AI Freescale board.
+  *
+@@ -132,7 +132,7 @@
+  * Miscellaneous configurable options
+  */
+ #define CONFIG_SYS_LONGHELP		/* undef to save memory */
+-#define CONFIG_SYS_PROMPT		"MX6SOLO SABREAUTO MFG U-Boot > "
++#define CONFIG_SYS_PROMPT		"MX6DL SABREAUTO MFG U-Boot > "
+ #define CONFIG_AUTO_COMPLETE
+ #define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
+ /* Print Buffer Size */
+-- 
+1.7.7.4
+

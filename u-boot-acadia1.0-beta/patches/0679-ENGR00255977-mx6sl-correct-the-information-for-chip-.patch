@@ -1,0 +1,127 @@
+From ecc7d124fe49c9ade7f4acc2b09deebfe4dd444f Mon Sep 17 00:00:00 2001
+From: Robby Cai <R63905@freescale.com>
+Date: Fri, 22 Mar 2013 18:34:49 +0800
+Subject: [PATCH 679/691] ENGR00255977 mx6sl: correct the information for chip
+ and board revision
+
+mx6sl chip revision is from different-offset register in anatop module
+comparing to other mx6 series. This patch fixes it and also uses board
+'RevC' to indicate the latest board revision if this information can not
+be obtained from fuse.
+
+Signed-off-by: Robby Cai <R63905@freescale.com>
+(cherry picked from commit 39e36b5e5a7cfe53fd6e286d9fe9024b365f1a29)
+---
+ board/freescale/common/fsl_sys_rev.c  |   12 +++++++++---
+ board/freescale/mx6sl_evk/mx6sl_evk.c |   15 +++++++++------
+ include/asm-arm/arch-mx6/mx6.h        |    3 ++-
+ 3 files changed, 20 insertions(+), 10 deletions(-)
+
+diff --git a/board/freescale/common/fsl_sys_rev.c b/board/freescale/common/fsl_sys_rev.c
+index 19a0347..953f422 100644
+--- a/board/freescale/common/fsl_sys_rev.c
++++ b/board/freescale/common/fsl_sys_rev.c
+@@ -20,7 +20,7 @@
+ #include <config.h>
+ #include <common.h>
+ #include <asm/io.h>
+-#if defined(CONFIG_MX6Q) || defined(CONFIG_MX6DL)
++#if defined(CONFIG_MX6Q) || defined(CONFIG_MX6DL) || defined(CONFIG_MX6SL)
+ #include <asm/arch/mx6.h>
+ #endif
+ 
+@@ -30,7 +30,7 @@
+ 
+ unsigned int fsl_system_rev;
+ 
+-#if defined(CONFIG_MX6Q) || defined(CONFIG_MX6DL)
++#if defined(CONFIG_MX6Q) || defined(CONFIG_MX6DL) || defined(CONFIG_MX6SL)
+ /*
+  * Set fsl_system_rev:
+  * bit 0-7: Chip Revision ID
+@@ -68,8 +68,14 @@ void fsl_set_system_rev(void)
+ 	 * | 31 - 20 | 19 - 12 | 11 - 8 | 7 - 0 |
+ 	 * | resverd | CHIP ID | BD REV | SI REV |
+ 	 */
+-	u32 cpu_type = readl(ANATOP_BASE_ADDR + 0x260);
+ 	u32 board_type = 0;
++	u32 cpu_type = readl(ANATOP_BASE_ADDR + 0x280);
++
++	if ((cpu_type >> 16) == 0x60)
++		goto found;
++
++	cpu_type = readl(ANATOP_BASE_ADDR + 0x260);
++found:
+ 	/* Chip Silicon ID */
+ 	fsl_system_rev = ((cpu_type >> 16) & 0xFF) << 12;
+ 	/* Chip silicon major revision */
+diff --git a/board/freescale/mx6sl_evk/mx6sl_evk.c b/board/freescale/mx6sl_evk/mx6sl_evk.c
+index e70d074..6cdcc0f 100644
+--- a/board/freescale/mx6sl_evk/mx6sl_evk.c
++++ b/board/freescale/mx6sl_evk/mx6sl_evk.c
+@@ -64,7 +64,6 @@
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+-static u32 system_rev;
+ static enum boot_device boot_dev;
+ 
+ #define USB_OTG_PWR IMX_GPIO_NR(4, 0)
+@@ -112,10 +111,13 @@ enum boot_device get_boot_device(void)
+ 
+ u32 get_board_rev(void)
+ {
+-
+-	system_rev = 0x60000 | BOARD_REV_3; /* means revB: EVK */
+-
+-	return system_rev;
++	/*
++	 * If no fuse burned for board version (i.e., 0x0),
++	 * then assume latest one - RevC
++	 */
++	if ((fsl_system_rev & BOARD_REV_MASK) == BOARD_REV_1)
++		fsl_system_rev |= BOARD_REV_4;
++	return fsl_system_rev;
+ }
+ 
+ int dram_init(void)
+@@ -1033,6 +1035,7 @@ int board_init(void)
+ 
+ 	mxc_iomux_v3_init((void *)IOMUXC_BASE_ADDR);
+ 	setup_boot_device();
++	fsl_set_system_rev();
+ 
+ 	/* board id for linux */
+ 	gd->bd->bi_arch_number = MACH_TYPE_MX6SL_EVK;
+@@ -1069,7 +1072,7 @@ int board_late_init(void)
+ 
+ int checkboard(void)
+ {
+-	printf("Board: MX6SoloLite-EVK:[ ");
++	printf("Board: MX6SoloLite-EVK (0x%x): [ ", fsl_system_rev);
+ 
+ 	switch (__REG(SRC_BASE_ADDR + 0x8)) {
+ 	case 0x0001:
+diff --git a/include/asm-arm/arch-mx6/mx6.h b/include/asm-arm/arch-mx6/mx6.h
+index 54eeddf..9fc1e7a 100644
+--- a/include/asm-arm/arch-mx6/mx6.h
++++ b/include/asm-arm/arch-mx6/mx6.h
+@@ -719,13 +719,14 @@
+ #define CHIP_REV_1_0            0x10
+ #define CHIP_REV_2_0            0x20
+ #define CHIP_REV_2_1            0x21
+-#define CHIP_REV_UNKNOWN        0xff
++#define CHIP_REV_MASK           0xff
+ 
+ #define BOARD_REV_1             0x000
+ #define BOARD_REV_2             0x100
+ #define BOARD_REV_3             0x200
+ #define BOARD_REV_4             0x300
+ #define BOARD_REV_5             0x400
++#define BOARD_REV_MASK          0xf00
+ 
+ #define PLATFORM_ICGC           0x14
+ 
+-- 
+1.7.7.4
+

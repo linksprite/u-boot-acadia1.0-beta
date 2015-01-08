@@ -1,0 +1,80 @@
+From 78f8d830f76a64c0b856d6da1a419a518bf034f3 Mon Sep 17 00:00:00 2001
+From: Lin Fuzhen <fuzhen.lin@freescale.com>
+Date: Wed, 19 Jun 2013 14:24:09 +0800
+Subject: [PATCH 688/691] ENGR00266869-2 imx6x sabresd: correct the bootargs
+ for android
+
+The original design set the boot params default for eMMC on sabrsd
+This patch corrects env setting according boot device which is selected.
+
+Signed-off-by: Lin Fuzhen <fuzhen.lin@freescale.com>
+---
+ board/freescale/mx6q_sabresd/mx6q_sabresd.c |   19 +++++++++++++++++--
+ include/configs/mx6dl_sabresd_android.h     |    2 --
+ include/configs/mx6q_sabresd_android.h      |    2 --
+ 3 files changed, 17 insertions(+), 6 deletions(-)
+
+diff --git a/board/freescale/mx6q_sabresd/mx6q_sabresd.c b/board/freescale/mx6q_sabresd/mx6q_sabresd.c
+index b37b776..8caca4a 100644
+--- a/board/freescale/mx6q_sabresd/mx6q_sabresd.c
++++ b/board/freescale/mx6q_sabresd/mx6q_sabresd.c
+@@ -1775,13 +1775,28 @@ int check_recovery_cmd_file(void)
+ int board_late_init(void)
+ {
+ 	int ret = 0;
+-	#ifdef CONFIG_I2C_MXC
++#ifdef MX6Q_SABRESD_ANDROID_H
++	switch (get_boot_device()) {
++	case SD_BOOT:
++		setenv("fastboot_dev", "mmc2");
++		setenv("bootcmd", "booti mmc2");
++		break;
++	case MMC_BOOT:
++		setenv("fastboot_dev", "mmc3");
++		setenv("bootcmd", "booti mmc3");
++		break;
++	default:
++		printf("unsupported boot devices\n");
++		break;
++	}
++#endif
++#ifdef CONFIG_I2C_MXC
+ 	setup_i2c(CONFIG_SYS_I2C_PORT);
+ 	i2c_bus_recovery();
+ 	ret = setup_pmic_voltages();
+ 	if (ret)
+ 		return -1;
+-	#endif
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/include/configs/mx6dl_sabresd_android.h b/include/configs/mx6dl_sabresd_android.h
+index f903e99..de8e5f1 100644
+--- a/include/configs/mx6dl_sabresd_android.h
++++ b/include/configs/mx6dl_sabresd_android.h
+@@ -76,8 +76,6 @@
+ #define	CONFIG_EXTRA_ENV_SETTINGS					\
+ 		"netdev=eth0\0"						\
+ 		"ethprime=FEC0\0"					\
+-		"fastboot_dev=mmc3\0"					\
+-		"bootcmd=booti mmc3\0"					\
+ 		"splashimage=0x30000000\0"				\
+ 		"splashpos=m,m\0"					\
+ 		"lvds_num=1\0"
+diff --git a/include/configs/mx6q_sabresd_android.h b/include/configs/mx6q_sabresd_android.h
+index 4094cbe..db92812 100644
+--- a/include/configs/mx6q_sabresd_android.h
++++ b/include/configs/mx6q_sabresd_android.h
+@@ -73,8 +73,6 @@
+ #define	CONFIG_EXTRA_ENV_SETTINGS					\
+ 		"netdev=eth0\0"						\
+ 		"ethprime=FEC0\0"					\
+-		"fastboot_dev=mmc3\0"					\
+-		"bootcmd=booti mmc3\0"					\
+ 		"splashimage=0x30000000\0"				\
+ 		"splashpos=m,m\0"					\
+ 		"lvds_num=1\0"
+-- 
+1.7.7.4
+
